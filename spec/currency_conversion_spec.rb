@@ -2,6 +2,7 @@ require 'dotenv'
 require 'spec_helper'
 require 'currency_conversion'
 require 'currency_conversion/live/live_options'
+require 'currency_conversion/list/list_options'
 
 
 # Load Environment Variables
@@ -100,7 +101,19 @@ describe CurrencyLayer do
   end
 
   it 'list' do
-    expect(nil).not_to be nil
+
+    # Declare the Client instance passing in the authentication parameters
+    @client = CurrencyLayer::Client.new(ENV['ACCESS_KEY'])
+
+    # We declare the options
+    options = CurrencyLayer::ListOptions.new()
+
+    # We make the call to validate
+    response = @client.list(options)
+
+    # First we check the response
+    expect(response).not_to be nil
+
   end
 
   it 'historical' do

@@ -1,6 +1,6 @@
 module CurrencyLayer
 
-  class LiveException < Exception
+  class ListException < Exception
 
     attr_accessor :error
 

@@ -1,13 +1,10 @@
 module CurrencyLayer
 
-  class LiveOptions
+  class ListOptions
 
     include Hashable
 
     attr_accessor :access_key
-
-    attr_accessor :currencies
-    attr_accessor :source
 
     def initialize()
       @query = nil

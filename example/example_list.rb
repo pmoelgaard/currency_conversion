@@ -1,6 +1,6 @@
 require 'dotenv'
 require 'currency_conversion'
-require 'currency_conversion/live/live_options'
+require 'currency_conversion/list/list_options'
 
 # Load Environment Variables
 Dotenv.load
@@ -10,18 +10,15 @@ begin
   # Declare the Client instance passing in the authentication parameters
   @client = CurrencyLayer::Client.new(ENV['ACCESS_KEY'])
 
-  # Set the currencies to fetch
-  currencies = 'AUD,EUR,GBP,PLN'
-
   # We declare the options
-  options = CurrencyLayer::LiveOptions.new()
+  options = CurrencyLayer::ListOptions.new()
 
-  # We make the call to fetch the live currencies
-  response = @client.live(currencies, options)
+  # We make the call to fetch the list of currencies
+  response = @client.list(options)
 
   # If its a success, we print a message to the user
   if !response.nil?
-    puts 'SUCCESS : Live Currencies Fetched...' << response.to_s
+    puts 'SUCCESS : List of Currencies Fetched...' << response.to_s
   end
 
 rescue => e

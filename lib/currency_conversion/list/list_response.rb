@@ -1,6 +1,6 @@
 module CurrencyLayer
 
-  class LiveResponse
+  class ListResponse
 
     SUCCESS_EXPR = 'success'
     ERROR_EXPR = 'error'
