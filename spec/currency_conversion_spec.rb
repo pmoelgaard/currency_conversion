@@ -3,6 +3,7 @@ require 'spec_helper'
 require 'currency_conversion'
 require 'currency_conversion/live/live_options'
 require 'currency_conversion/list/list_options'
+require 'currency_conversion/historical/historical_options'
 
 
 # Load Environment Variables
@@ -117,7 +118,24 @@ describe CurrencyLayer do
   end
 
   it 'historical' do
-    expect(nil).not_to be nil
+    begin
+
+      # Declare the Client instance passing in the authentication parameters
+      @client = CurrencyLayer::Client.new(ENV['ACCESS_KEY'])
+
+      # Set the currencies to fetch
+      date = '2005-02-01'
+
+      # We declare the options
+      options = CurrencyLayer::HistoricalOptions.new()
+
+      # We make the get the historical rates
+      response = @client.historical(date, options)
+
+      # First we check the response
+      expect(response).not_to be nil
+
+    end
   end
 
   it 'convert' do

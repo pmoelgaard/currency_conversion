@@ -3,8 +3,13 @@ require "hashable"
 require "currency_conversion/version"
 require "currency_conversion/live/live_request"
 require "currency_conversion/live/live_response"
+require "currency_conversion/live/live_exception"
 require "currency_conversion/list/list_request"
 require "currency_conversion/list/list_response"
+require "currency_conversion/list/list_exception"
+require "currency_conversion/historical/historical_request"
+require "currency_conversion/historical/historical_response"
+require "currency_conversion/historical/historical_exception"
 
 module CurrencyLayer
 
@@ -90,6 +95,48 @@ module CurrencyLayer
 
         if (res[CurrencyLayer::ListResponse::ERROR_EXPR])
           raise CurrencyLayer::ListException.new res[CurrencyLayer::ListResponse::ERROR_EXPR]
+        end
+
+        # We just return the parsed binary response
+        return res.parsed_response
+
+      rescue => e
+        puts e.inspect
+        return e
+
+      end
+    end
+
+    def historical(date, options = {})
+
+      if date.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'date'
+        return
+      end
+
+      # Create a shallow copy so we don't manipulate the original reference
+      q = options.dup
+
+      # Populate the Query
+      q.access_key = @access_key
+      q.date = date
+
+      # We then create the Request
+      req = CurrencyLayer::HistoricalRequest.new(q)
+
+      #  We create a Hash of the request so we can send it via HTTP
+      req_dto = req.to_dh
+
+      begin
+
+        # We make the actual request
+        res = self.class.get('/historical', req_dto)
+
+        # We ensure that we tap the response so we can use the results
+        res.inspect
+
+        if (res[CurrencyLayer::HistoricalResponse::ERROR_EXPR])
+          raise CurrencyLayer::HistoricalException.new res[CurrencyLayer::HistoricalResponse::ERROR_EXPR]
         end
 
         # We just return the parsed binary response
