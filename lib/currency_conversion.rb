@@ -10,6 +10,15 @@ require "currency_conversion/list/list_exception"
 require "currency_conversion/historical/historical_request"
 require "currency_conversion/historical/historical_response"
 require "currency_conversion/historical/historical_exception"
+require "currency_conversion/convert/convert_request"
+require "currency_conversion/convert/convert_response"
+require "currency_conversion/convert/convert_exception"
+require "currency_conversion/timeframe/timeframe_request"
+require "currency_conversion/timeframe/timeframe_response"
+require "currency_conversion/timeframe/timeframe_exception"
+require "currency_conversion/change/change_request"
+require "currency_conversion/change/change_response"
+require "currency_conversion/change/change_exception"
 
 module CurrencyLayer
 
@@ -137,6 +146,168 @@ module CurrencyLayer
 
         if (res[CurrencyLayer::HistoricalResponse::ERROR_EXPR])
           raise CurrencyLayer::HistoricalException.new res[CurrencyLayer::HistoricalResponse::ERROR_EXPR]
+        end
+
+        # We just return the parsed binary response
+        return res.parsed_response
+
+      rescue => e
+        puts e.inspect
+        return e
+
+      end
+    end
+
+    def convert(from, to, amount, options = {})
+
+      if from.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'from'
+        return
+      end
+
+      if to.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'to'
+        return
+      end
+
+      if amount.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'amount'
+        return
+      end
+
+      # Create a shallow copy so we don't manipulate the original reference
+      q = options.dup
+
+      # Populate the Query
+      q.access_key = @access_key
+      q.from = from
+      q.to = to
+      q.amount = amount
+
+      # We then create the Request
+      req = CurrencyLayer::ConvertRequest.new(q)
+
+      #  We create a Hash of the request so we can send it via HTTP
+      req_dto = req.to_dh
+
+      begin
+
+        # We make the actual request
+        res = self.class.get('/convert', req_dto)
+
+        # We ensure that we tap the response so we can use the results
+        res.inspect
+
+        if (res[CurrencyLayer::ConvertResponse::ERROR_EXPR])
+          raise CurrencyLayer::ConvertException.new res[CurrencyLayer::ConvertResponse::ERROR_EXPR]
+        end
+
+        # We just return the parsed binary response
+        return res.parsed_response
+
+      rescue => e
+        puts e.inspect
+        return e
+
+      end
+    end
+
+    def timeframe(start_date, end_date, currencies, options = {})
+
+      if start_date.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'start_date'
+        return
+      end
+
+      if end_date.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'end_date'
+        return
+      end
+
+      if currencies.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'currencies'
+        return
+      end
+
+      # Create a shallow copy so we don't manipulate the original reference
+      q = options.dup
+
+      # Populate the Query
+      q.access_key = @access_key
+      q.start_date = start_date
+      q.end_date = end_date
+      q.currencies = currencies
+
+      # We then create the Request
+      req = CurrencyLayer::TimeframeRequest.new(q)
+
+      #  We create a Hash of the request so we can send it via HTTP
+      req_dto = req.to_dh
+
+      begin
+
+        # We make the actual request
+        res = self.class.get('/timeframe', req_dto)
+
+        # We ensure that we tap the response so we can use the results
+        res.inspect
+
+        if (res[CurrencyLayer::TimeframeResponse::ERROR_EXPR])
+          raise CurrencyLayer::TimeframeException.new res[CurrencyLayer::TimeframeResponse::ERROR_EXPR]
+        end
+
+        # We just return the parsed binary response
+        return res.parsed_response
+
+      rescue => e
+        puts e.inspect
+        return e
+
+      end
+    end
+
+    def change(start_date, end_date, currencies, options = {})
+
+      if start_date.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'start_date'
+        return
+      end
+
+      if end_date.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'end_date'
+        return
+      end
+
+      if currencies.nil?
+        raise CurrencyLayer::MissingArgumentException.new 'currencies'
+        return
+      end
+
+      # Create a shallow copy so we don't manipulate the original reference
+      q = options.dup
+
+      # Populate the Query
+      q.access_key = @access_key
+      q.start_date = start_date
+      q.end_date = end_date
+      q.currencies = currencies
+
+      # We then create the Request
+      req = CurrencyLayer::ChangeRequest.new(q)
+
+      #  We create a Hash of the request so we can send it via HTTP
+      req_dto = req.to_dh
+
+      begin
+
+        # We make the actual request
+        res = self.class.get('/change', req_dto)
+
+        # We ensure that we tap the response so we can use the results
+        res.inspect
+
+        if (res[CurrencyLayer::ChangeResponse::ERROR_EXPR])
+          raise CurrencyLayer::ChangeException.new res[CurrencyLayer::ChangeResponse::ERROR_EXPR]
         end
 
         # We just return the parsed binary response

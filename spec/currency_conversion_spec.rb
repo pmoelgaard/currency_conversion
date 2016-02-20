@@ -4,6 +4,8 @@ require 'currency_conversion'
 require 'currency_conversion/live/live_options'
 require 'currency_conversion/list/list_options'
 require 'currency_conversion/historical/historical_options'
+require 'currency_conversion/convert/convert_options'
+require 'currency_conversion/timeframe/timeframe_options'
 
 
 # Load Environment Variables
@@ -139,15 +141,66 @@ describe CurrencyLayer do
   end
 
   it 'convert' do
-    expect(nil).not_to be nil
+
+    # Declare the Client instance passing in the authentication parameters
+    @client = CurrencyLayer::Client.new(ENV['ACCESS_KEY'])
+
+    # Set the currencies to fetch
+    from = 'SGD'
+    to = 'THB'
+    amount = '100'
+
+    # We declare the options
+    options = CurrencyLayer::ConvertOptions.new()
+
+    # We make the call to validate
+    response = @client.convert(from, to, amount, options)
+
+    # First we check the response
+    expect(response).not_to be nil
+
   end
 
   it 'timeframe' do
-    expect(nil).not_to be nil
+
+    # Declare the Client instance passing in the authentication parameters
+    @client = CurrencyLayer::Client.new(ENV['ACCESS_KEY'])
+
+    # Set the currencies to fetch
+    start_date = '2010-03-01'
+    end_date = '2010-04-01'
+    currencies = 'USD,GBP,EUR'
+
+    # We declare the options
+    options = CurrencyLayer::TimeframeOptions.new()
+
+    # We make the call to validate
+    response = @client.timeframe(start_date, end_date, currencies, options)
+
+    # First we check the response
+    expect(response).not_to be nil
+
   end
 
   it 'change' do
-    expect(nil).not_to be nil
+
+    # Declare the Client instance passing in the authentication parameters
+    @client = CurrencyLayer::Client.new(ENV['ACCESS_KEY'])
+
+    # Set the currencies to fetch
+    start_date = '2010-03-01'
+    end_date = '2010-04-01'
+    currencies = 'USD,GBP,EUR'
+
+    # We declare the options
+    options = CurrencyLayer::TimeframeOptions.new()
+
+    # We make the call to validate
+    response = @client.change(start_date, end_date, currencies, options)
+
+    # First we check the response
+    expect(response).not_to be nil
+
   end
 
 end
