@@ -82,16 +82,9 @@ Boolean value to indicate if the calls to the API should use a secure protocol o
 ## Live
 Takes a simple string and detects the language with a list of detections.
 
-###### Define Query
-
-	var liveQuery = {
-    	source: 'SGD',
-	    currencies: ['USD', 'THB']
-	};
-
 ###### Simple Request
 
-```ruby
+```
 # Set the currencies to fetch
 currencies = 'AUD,EUR,GBP,PLN'
   
@@ -102,23 +95,35 @@ options = CurrencyLayer::LiveOptions.new()
 response = @client.live(currencies, options)
   
 ```
+
+## List
+Fetches the list of currencies.
+
+###### Simple Request
+
+```
+# We declare the options
+options = CurrencyLayer::ListOptions.new()
+ 	
+# We make the call to fetch the list of currencies
+response = @client.list(options)
+  
+```
     
 ###### Response
-```
 
+```
 {
-  "success": true,
-  "terms": "https://currencylayer.com/terms",
-  "privacy": "https://currencylayer.com/privacy",
-  "timestamp": 1455968535,
-  "source": "USD",
-  "quotes": {
-    "USDAUD": 1.39865,
-    "USDEUR": 0.898271,
-    "USDGBP": 0.694155,
-    "USDPLN": 3.927404
-  }
-}
+  [...]
+  "currencies": {
+    "AED": "United Arab Emirates Dirham",
+    "AFN": "Afghan Afghani",
+    "ALL": "Albanian Lek",
+    "AMD": "Armenian Dram",
+    "ANG": "Netherlands Antillean Guilder",  
+    [...] 
+    }
+} 
 
 ```
 
