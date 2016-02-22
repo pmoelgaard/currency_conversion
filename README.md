@@ -95,6 +95,10 @@ options = CurrencyLayer::LiveOptions.new()
 response = @client.live(currencies, options)
   
 ```
+### Etag & Date (If-None-Match, If-Modified-Since)
+The ```live``` endpoint supports these headers to minimise unnecessary traffic and load on systems.
+This library internally sets these headers and manages a local cache, so whenever the library receives a 304 (no changes) response from the server, it will return the last response it received. This way this library will always return a response.
+
 
 ## List
 Fetches the list of currencies.

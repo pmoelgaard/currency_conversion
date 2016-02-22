@@ -38,7 +38,11 @@ module CurrencyLayer
 
     end
 
-    def live(currencies, options = {})
+
+    attr_accessor :live_last_response
+    attr_accessor :live_last_response_headers
+
+    def live(currencies, options = {}, headers = {})
 
       if currencies.nil?
         raise CurrencyLayer::MissingArgumentException.new 'currencies'
@@ -52,8 +56,14 @@ module CurrencyLayer
       q.access_key = @access_key
       q.currencies = currencies
 
+      # Set the cache options
+      if (self.live_last_response_headers)
+        headers['If-None-Match'] = self.live_last_response_headers['etag']
+        headers['If-Modified-Since'] = self.live_last_response_headers['date']
+      end
+
       # We then create the Request
-      req = CurrencyLayer::LiveRequest.new(q)
+      req = CurrencyLayer::LiveRequest.new(q, headers)
 
       #  We create a Hash of the request so we can send it via HTTP
       req_dto = req.to_dh
@@ -66,9 +76,18 @@ module CurrencyLayer
         # We ensure that we tap the response so we can use the results
         res.inspect
 
+        # We have struck a 304, and we just return the last_response
+        if(res.nil? && ! self.live_last_response.nil?)
+          return self.live_last_response
+        end
+
         if (res[CurrencyLayer::LiveResponse::ERROR_EXPR])
           raise CurrencyLayer::LiveException.new res[CurrencyLayer::LiveResponse::ERROR_EXPR]
         end
+
+        # To facilitate we set the cache arguments
+        self.live_last_response = res.parsed_response
+        self.live_last_response_headers = res.headers
 
         # We just return the parsed binary response
         return res.parsed_response
