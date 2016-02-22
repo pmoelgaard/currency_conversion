@@ -131,6 +131,54 @@ response = @client.list(options)
 
 ```
 
+## Timeframe
+request historical exchange rates for a time-period of your choice. (maximum range: 365 days).   
+_Note: This library enforces to use the ```currencies``` argument since it's highly recommended practice._
+
+###### Simple Request
+
+```
+# We declare the arguments
+start_date = '2010-03-01'
+end_date = '2010-04-01'
+currencies = 'USD,GBP,EUR'
+
+# We declare the options
+options = CurrencyLayer::TimeframeOptions.new()
+ 	
+# We make the call to fetch the list of currencies
+response = @client.timeframe(start_date, end_date, currencies options)
+  
+```
+    
+###### Response
+
+```
+{
+  "success": true,
+  "terms": "https://currencylayer.com/terms",
+  "privacy": "https://currencylayer.com/privacy",
+  "timeframe": true,
+  "start_date": "2010-03-01",
+  "end_date": "2010-04-01",
+  "source": "USD",
+  "quotes": {
+    "2010-03-01": {
+      "USDUSD": 1,
+      "USDGBP": 0.668525,
+      "USDEUR": 0.738541
+    },
+    "2010-03-02": {
+      "USDUSD": 1,
+      "USDGBP": 0.668827,
+      "USDEUR": 0.736145
+    },
+    [...]
+  }
+}  
+
+```
+
 ---
 
 ## Example Application
